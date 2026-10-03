@@ -1,0 +1,22 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+
+# Large training dataset
+dataset/
+
+# Local database
+plantvision.db
+
+# User uploaded images
+static/uploads/*
+!static/uploads/.gitkeep

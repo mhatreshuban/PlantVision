@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantVision</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav>
+    <a class="logo" href="/">🌿 PlantVision</a>
+
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/analyze">Analyze</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/about">About</a></li>
+    </ul>
+</nav>
+
+<section class="hero">
+
+    <h1>AI Plant Disease Detection</h1>
+
+    <p>
+        Upload a photograph of a plant leaf and let
+        PlantVision analyze visible disease patterns
+        using deep learning.
+    </p>
+
+    <a class="btn" href="/analyze">
+        📷 Analyze a Plant
+    </a>
+
+</section>
+
+<div class="container">
+
+    <div class="result-grid">
+
+        <div class="card">
+            <h2>📷 Upload</h2>
+            <p>
+                Take or upload a clear photograph
+                of a plant leaf.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>🧠 AI Analysis</h2>
+            <p>
+                MobileNetV2 analyzes visual patterns
+                using transfer learning.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>🌱 Result</h2>
+            <p>
+                Receive the predicted plant condition,
+                confidence and care recommendation.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    PlantVision • AI-Based Plant Disease Detection
+</footer>
+
+</body>
+</html>

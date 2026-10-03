@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Analyze Plant - PlantVision</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <a class="logo" href="/">
+        🌿 PlantVision
+    </a>
+
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a class="active" href="/analyze">Analyze</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/about">About</a></li>
+    </ul>
+
+</nav>
+
+
+<!-- ================= PAGE HEADER ================= -->
+
+<section class="page-header">
+
+    <span class="badge">
+        AI PLANT HEALTH ANALYSIS
+    </span>
+
+    <h1>Analyze Your Plant</h1>
+
+    <p>
+        Upload a clear photograph of a plant leaf.
+        PlantVision will identify supported plant diseases
+        and provide detailed plant-care information.
+    </p>
+
+</section>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container analyze-container">
+
+
+    <!-- ================= UPLOAD ================= -->
+
+    <section class="card upload-card">
+
+        <div class="upload-top-icon">
+            📷
+        </div>
+
+        <h2>Upload Plant Leaf</h2>
+
+        <p class="muted">
+            Use a clear, well-lit photograph showing the leaf.
+        </p>
+
+
+        <form
+            method="POST"
+            action="/analyze"
+            enctype="multipart/form-data"
+        >
+
+            <div class="upload-box">
+
+                <div class="leaf-icon">
+                    🍃
+                </div>
+
+                <h3>Select a Leaf Image</h3>
+
+                <p>
+                    JPG, JPEG, PNG or WEBP • Maximum 10 MB
+                </p>
+
+
+                <input
+                    type="file"
+                    name="plant_image"
+                    id="plant_image"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    required
+                >
+
+
+                <!-- IMAGE PREVIEW -->
+
+                <div
+                    id="preview-container"
+                    class="preview-container"
+                >
+
+                    <p class="preview-title">
+                        Selected Image
+                    </p>
+
+                    <img
+                        id="image-preview"
+                        class="image-preview"
+                        alt="Selected plant leaf"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn analyze-btn"
+                type="submit"
+            >
+                🔍 Analyze Plant
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================= ERROR ================= -->
+
+    {% if error %}
+
+    <div class="error-message">
+
+        <span>⚠️</span>
+
+        <div>
+
+            <strong>
+                Unable to Analyze Image
+            </strong>
+
+            <p>
+                {{ error }}
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+
+    <!-- ================= RESULT ================= -->
+
+    {% if prediction %}
+
+    <section class="card result-card">
+
+
+        <!-- RESULT HEADING -->
+
+        <div class="result-heading">
+
+            <div>
+
+                <span class="badge">
+                    AI ANALYSIS RESULT
+                </span>
+
+                <h2>
+                    Plant Health Report
+                </h2>
+
+            </div>
+
+
+            {% if valid_prediction %}
+
+                {% if result_info.status == "Healthy" %}
+
+                <span class="status-pill healthy-pill">
+                    ● Healthy
+                </span>
+
+                {% else %}
+
+                <span class="status-pill disease-pill">
+                    ● Disease Detected
+                </span>
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- ================= IMAGE ================= -->
+
+        {% if image_filename %}
+
+        <div class="result-image-wrapper">
+
+            <img
+                class="result-image"
+                src="{{ url_for(
+                    'static',
+                    filename='uploads/' + image_filename
+                ) }}"
+                alt="Analyzed plant leaf"
+            >
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- ================= VALID RESULT ================= -->
+
+        {% if valid_prediction %}
+
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="result-grid">
+
+
+            <!-- PLANT -->
+
+            <div class="result-item">
+
+                <div class="result-icon">
+                    🌿
+                </div>
+
+                <span class="result-label">
+                    PLANT
+                </span>
+
+                <strong>
+                    {{ result_info.plant }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- CONDITION -->
+
+            <div class="result-item">
+
+                <div class="result-icon">
+                    🦠
+                </div>
+
+                <span class="result-label">
+                    CONDITION
+                </span>
+
+                <strong>
+                    {{ result_info.disease }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- CONFIDENCE -->
+
+            <div class="result-item">
+
+                <div class="result-icon">
+                    📊
+                </div>
+
+                <span class="result-label">
+                    AI CONFIDENCE
+                </span>
+
+                <strong>
+                    {{ "%.2f"|format(confidence) }}%
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= CONFIDENCE ================= -->
+
+        <div class="confidence-card">
+
+            <div class="confidence-heading">
+
+                <span>
+                    AI Model Confidence
+                </span>
+
+                <strong>
+                    {{ "%.2f"|format(confidence) }}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    style="width: {{ confidence }}%;"
+                ></div>
+
+            </div>
+
+
+            <p class="confidence-note">
+                Confidence shows how strongly the image matches
+                one of the classes learned by the AI model.
+                It is not a laboratory-confirmed diagnosis.
+            </p>
+
+        </div>
+
+
+
+        <!-- =============================================
+             HEALTHY PLANT
+        ============================================== -->
+
+        {% if result_info.status == "Healthy" %}
+
+
+        <div class="health-report-section">
+
+            <div class="section-title">
+
+                <span>✅</span>
+
+                <div>
+                    <h2>Plant Appears Healthy</h2>
+
+                    <p>
+                        AI visual health assessment
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- HEALTH INFORMATION -->
+
+        <div class="detail-card healthy-detail">
+
+            <div class="detail-icon">
+                🌿
+            </div>
+
+            <div>
+
+                <h3>
+                    Health Assessment
+                </h3>
+
+                <p>
+                    {{ result_info.symptoms }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- HEALTH CARE -->
+
+        <div class="detail-card treatment-detail">
+
+            <div class="detail-icon">
+                💚
+            </div>
+
+            <div>
+
+                <h3>
+                    General Plant Care
+                </h3>
+
+                <p>
+                    {{ result_info.treatment }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- HEALTH NUTRITION -->
+
+        <div class="detail-card nutrition-detail">
+
+            <div class="detail-icon">
+                🧪
+            </div>
+
+            <div>
+
+                <h3>
+                    Nutrition & Fertilizer Guidance
+                </h3>
+
+                <p>
+                    {{ result_info.nutrition }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- PREVENTION -->
+
+        <div class="detail-card prevention-detail">
+
+            <div class="detail-icon">
+                🛡️
+            </div>
+
+            <div>
+
+                <h3>
+                    Keep Your Plant Healthy
+                </h3>
+
+                <p>
+                    {{ result_info.prevention }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        {% else %}
+
+
+        <!-- =============================================
+             DISEASE REPORT
+        ============================================== -->
+
+        <div class="disease-report-heading">
+
+            <span class="report-icon">
+                🩺
+            </span>
+
+            <div>
+
+                <h2>
+                    Detailed Disease Report
+                </h2>
+
+                <p>
+                    Information about the detected condition
+                    and plant-care guidance.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= CAUSE ================= -->
+
+        <div class="detail-card cause-detail">
+
+            <div class="detail-icon">
+                🔬
+            </div>
+
+            <div>
+
+                <span class="detail-label">
+                    DISEASE INFORMATION
+                </span>
+
+                <h3>
+                    What is {{ result_info.disease }}?
+                </h3>
+
+                <p>
+                    {{ result_info.cause }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= SYMPTOMS ================= -->
+
+        <div class="detail-card symptoms-detail">
+
+            <div class="detail-icon">
+                🍂
+            </div>
+
+            <div>
+
+                <span class="detail-label">
+                    IDENTIFICATION
+                </span>
+
+                <h3>
+                    Common Symptoms
+                </h3>
+
+                <p>
+                    {{ result_info.symptoms }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= SPREAD ================= -->
+
+        {% if result_info.spread %}
+
+        <div class="detail-card spread-detail">
+
+            <div class="detail-icon">
+                🦠
+            </div>
+
+            <div>
+
+                <span class="detail-label">
+                    DISEASE DEVELOPMENT
+                </span>
+
+                <h3>
+                    How It Spreads
+                </h3>
+
+                <p>
+                    {{ result_info.spread }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- ================= TREATMENT ================= -->
+
+        <div class="detail-card treatment-detail">
+
+            <div class="detail-icon">
+                🩺
+            </div>
+
+            <div>
+
+                <span class="detail-label">
+                    RECOVERY PLAN
+                </span>
+
+                <h3>
+                    Treatment & Plant Care
+                </h3>
+
+                <p>
+                    {{ result_info.treatment }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= NUTRITION ================= -->
+
+        <div class="detail-card nutrition-detail">
+
+            <div class="detail-icon">
+                🧪
+            </div>
+
+            <div>
+
+                <span class="detail-label">
+                    PLANT NUTRITION
+                </span>
+
+                <h3>
+                    Nutrients & Fertilizer Guidance
+                </h3>
+
+                <p>
+                    {{ result_info.nutrition }}
+                </p>
+
+
+                <div class="nutrition-warning">
+
+                    <strong>
+                        ⚠️ Important:
+                    </strong>
+
+                    Fertilizer should not be used as a
+                    direct cure for fungal or bacterial
+                    diseases. Nutrients should be added
+                    according to the plant's actual needs
+                    and preferably after soil or growing
+                    medium testing.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= PREVENTION ================= -->
+
+        <div class="detail-card prevention-detail">
+
+            <div class="detail-icon">
+                🛡️
+            </div>
+
+            <div>
+
+                <span class="detail-label">
+                    FUTURE PROTECTION
+                </span>
+
+                <h3>
+                    Prevention
+                </h3>
+
+                <p>
+                    {{ result_info.prevention }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% endif %}
+
+
+
+        <!-- ================= DISCLAIMER ================= -->
+
+        <div class="diagnosis-note">
+
+            <span>
+                ℹ️
+            </span>
+
+            <div>
+
+                <strong>
+                    AI Screening Result
+                </strong>
+
+                <p>
+                    PlantVision analyzes visual patterns in
+                    leaf photographs. Similar symptoms can
+                    have different causes, including disease,
+                    insects, nutrient deficiency, watering
+                    problems or environmental stress.
+                    Use this result as preliminary guidance,
+                    not as a laboratory diagnosis.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =============================================
+             UNKNOWN IMAGE
+        ============================================== -->
+
+        {% else %}
+
+        <div class="unknown-box">
+
+            <div class="unknown-icon">
+                ⚠️
+            </div>
+
+            <h2>
+                Plant or Disease Not Recognized
+            </h2>
+
+            <p>
+                This image did not produce a sufficiently
+                reliable match with PlantVision's currently
+                supported disease classes.
+            </p>
+
+            <p>
+                Try using a clear photograph containing
+                one leaf, good lighting and a simple
+                background.
+            </p>
+
+
+            {% if confidence %}
+
+            <div class="unknown-confidence">
+
+                Highest model confidence:
+
+                <strong>
+                    {{ "%.2f"|format(confidence) }}%
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+            <div class="unsupported-note">
+
+                <strong>
+                    🌱 Different plant species?
+                </strong>
+
+                <p>
+                    The current disease model contains
+                    38 trained plant and disease classes.
+                    A plant-identification model will be
+                    added separately to support plants
+                    outside this disease dataset.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- ================= BUTTONS ================= -->
+
+        <div class="result-actions">
+
+            <a
+                class="btn"
+                href="/analyze"
+            >
+                📷 Analyze Another Plant
+            </a>
+
+
+            <a
+                class="secondary-btn"
+                href="/dashboard"
+            >
+                View Dashboard →
+            </a>
+
+        </div>
+
+
+    </section>
+
+    {% endif %}
+
+</main>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <strong>
+        🌿 PlantVision
+    </strong>
+
+    <span>
+        AI-Based Plant Health Analysis
+    </span>
+
+</footer>
+
+
+
+<!-- ================= IMAGE PREVIEW ================= -->
+
+<script>
+
+    const imageInput =
+        document.getElementById("plant_image");
+
+    const previewContainer =
+        document.getElementById("preview-container");
+
+    const imagePreview =
+        document.getElementById("image-preview");
+
+
+    imageInput.addEventListener(
+        "change",
+        function () {
+
+            const file = this.files[0];
+
+            if (file) {
+
+                const imageURL =
+                    URL.createObjectURL(file);
+
+                imagePreview.src =
+                    imageURL;
+
+                previewContainer.style.display =
+                    "block";
+
+            }
+
+            else {
+
+                previewContainer.style.display =
+                    "none";
+
+                imagePreview.src =
+                    "";
+            }
+        }
+    );
+
+</script>
+
+
+</body>
+</html>

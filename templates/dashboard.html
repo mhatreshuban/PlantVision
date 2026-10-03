@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - PlantVision</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav>
+
+    <a class="logo" href="/">
+        🌿 PlantVision
+    </a>
+
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/analyze">Analyze</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/about">About</a></li>
+    </ul>
+
+</nav>
+
+
+<div class="page-header">
+
+    <span class="badge">
+        ANALYTICS
+    </span>
+
+    <h1>Plant Health Dashboard</h1>
+
+    <p>
+        View your plant analysis history and
+        disease detection statistics.
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- STAT CARDS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📷
+            </div>
+
+            <p>Total Analyses</p>
+
+            <h2>
+                {{ total }}
+            </h2>
+
+            <span>
+                Images analyzed
+            </span>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon green-icon">
+                ✓
+            </div>
+
+            <p>Healthy Plants</p>
+
+            <h2>
+                {{ healthy }}
+            </h2>
+
+            <span>
+                Healthy detections
+            </span>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon red-icon">
+                !
+            </div>
+
+            <p>Disease Detected</p>
+
+            <h2>
+                {{ diseased }}
+            </h2>
+
+            <span>
+                Disease detections
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- COMMON DISEASES -->
+
+    <div class="card dashboard-card">
+
+        <div class="card-heading">
+
+            <div>
+                <span class="badge">
+                    INSIGHTS
+                </span>
+
+                <h2>
+                    🦠 Most Detected Diseases
+                </h2>
+            </div>
+
+        </div>
+
+
+        {% if common_diseases %}
+
+            <div class="disease-list">
+
+                {% for disease in common_diseases %}
+
+                    <div class="disease-row">
+
+                        <div>
+
+                            <strong>
+                                {{ disease[0] }}
+                            </strong>
+
+                            <p>
+                                Plant disease detection
+                            </p>
+
+                        </div>
+
+                        <span class="count-pill">
+
+                            {{ disease[1] }}
+                            detection(s)
+
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🌱
+                </div>
+
+                <h3>
+                    No disease detections yet
+                </h3>
+
+                <p>
+                    Analyze some plant leaves and your
+                    disease statistics will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- RECENT ANALYSES -->
+
+    <div class="card dashboard-card">
+
+        <div class="card-heading">
+
+            <div>
+
+                <span class="badge">
+                    HISTORY
+                </span>
+
+                <h2>
+                    🕒 Recent Analyses
+                </h2>
+
+            </div>
+
+
+            <a class="small-btn"
+               href="/analyze">
+
+                + New Analysis
+
+            </a>
+
+        </div>
+
+
+        {% if recent %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Plant</th>
+
+                            <th>Condition</th>
+
+                            <th>Status</th>
+
+                            <th>Confidence</th>
+
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for row in recent %}
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+                                        🌿 {{ row[2] }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+                                    {{ row[3] }}
+                                </td>
+
+
+                                <td>
+
+                                    {% if row[4] == "Healthy" %}
+
+                                        <span class="table-status healthy-pill">
+                                            Healthy
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="table-status disease-pill">
+                                            Disease
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    <strong>
+                                        {{ "%.2f"|format(row[5]) }}%
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+                                    {{ row[6] }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Your dashboard is ready
+                </h3>
+
+                <p>
+                    You haven't analyzed any plants yet.
+                    Your recent predictions will appear here.
+                </p>
+
+                <a class="btn"
+                   href="/analyze">
+
+                    📷 Analyze First Plant
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<footer>
+    🌿 PlantVision • AI-Based Plant Disease Detection
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About - PlantVision</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav>
+    <a class="logo" href="/">🌿 PlantVision</a>
+
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/analyze">Analyze</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/about">About</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1 class="section-title">
+            About PlantVision
+        </h1>
+
+        <p>
+            PlantVision is an AI-based plant disease
+            detection system that analyzes leaf images
+            and predicts plant health conditions.
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2 class="section-title">
+            How It Works
+        </h2>
+
+        <p>
+            1. User uploads a plant leaf image.<br><br>
+
+            2. The image is resized to 224 × 224 pixels.<br><br>
+
+            3. MobileNetV2 processes the image.<br><br>
+
+            4. The trained classifier predicts one
+            of 38 supported classes.<br><br>
+
+            5. PlantVision displays the plant,
+            condition and confidence score.<br><br>
+
+            6. The result is stored in SQLite
+            for dashboard analysis.
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Technologies Used
+        </h2>
+
+        <p>
+            Python • TensorFlow • MobileNetV2 •
+            Transfer Learning • Flask • SQLite •
+            HTML • CSS • NumPy • Pillow
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Model Performance
+        </h2>
+
+        <p>
+            The current model achieved approximately
+            <strong>94.42% validation accuracy</strong>
+            on the validation dataset.
+        </p>
+
+        <p>
+            The model supports 38 classes from the
+            selected plant-disease image dataset.
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Important Limitation
+        </h2>
+
+        <p>
+            PlantVision is an educational AI system.
+            Predictions are limited to the classes
+            represented in its training dataset.
+            Real-world photographs may differ from
+            training images, so predictions should
+            not be treated as professional agricultural
+            diagnosis.
+        </p>
+
+    </div>
+
+</div>
+
+<footer>
+    PlantVision • AI-Based Plant Disease Detection
+</footer>
+
+</body>
+</html>
