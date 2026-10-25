@@ -241,7 +241,7 @@ Therefore, PlantVision should be treated as an **AI-based preliminary screening 
 
 ## 👨‍💻 Developed By
 
-**Shuban Mhatre**
+**Shuban Mhatre** **Tanuja Mendhe** **Janvi Mujmule** **Shravani Nikam**
 
 Information Technology Engineering
 
